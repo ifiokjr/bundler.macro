@@ -1,0 +1,15 @@
+{
+  "include": [],
+  "files": [],
+  "references": [
+    {
+      "path": "packages/template-package/__tests__"
+    },
+    {
+      "path": "packages/template-package/src"
+    },
+    {
+      "path": "website/src"
+    }
+  ]
+}
