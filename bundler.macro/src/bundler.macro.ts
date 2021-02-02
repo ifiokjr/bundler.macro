@@ -263,7 +263,7 @@ function rollupBundle({ reference, state, babel }: MethodProps) {
         cjs({ extensions, include: /node_modules/ }),
         babel({ cwd, extensions, babelHelpers: 'runtime', rootMode: 'upward-optional' }),
         json({ namedExports: false }),
-        nodeResolve({ extensions, browser: true }),
+        nodeResolve({ extensions, browser: true, preferBuiltins: true }),
         process.env.NODE_ENV === 'production' && terser(),
       ],
     });
