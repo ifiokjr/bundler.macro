@@ -109,7 +109,7 @@
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "babel-plugin-dev-expression": "^0.2.2",
     "babel-plugin-macros": "^3.0.1",
-    "bundler.macro": "0.1.0",
+    "bundler.macro": "0.1.1",
     "cpy-cli": "^3.1.1",
     "esbuild": "^0.8.39",
     "eslint": "^7.19.0",
