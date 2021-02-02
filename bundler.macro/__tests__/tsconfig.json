@@ -5,7 +5,7 @@
     "",
     "Then run: `pnpm -w generate:ts`"
   ],
-  "extends": "../../../support/tsconfig.base.json",
+  "extends": "../../support/tsconfig.base.json",
   "compilerOptions": {
     "types": [
       "jest",

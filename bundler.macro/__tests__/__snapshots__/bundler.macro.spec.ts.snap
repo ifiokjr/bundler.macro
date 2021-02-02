@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rollupBundle run correctly: run correctly 1`] = `
+
+import { rollupBundle } from './macro.js';
+      const output = rollupBundle('./bundle.fixture.js');
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const output =
+  "var $$_MACRO_BUNDLER_GLOBAL_$$ = (function (exports) {\\n  'use strict';\\n\\n  function fn() {\\n    return 'awesome';\\n  }\\n\\n  const a = /*#__PURE__*/fn();\\n\\n  exports.a = a;\\n  exports.default = fn;\\n\\n  Object.defineProperty(exports, '__esModule', { value: true });\\n\\n  return exports;\\n\\n}({}));\\n";
+
+
+`;
+
+exports[`transpileFile run correctly: run correctly 1`] = `
+
+import { transpileFile } from './macro.js';
+      const output = transpileFile('./transpile.fixture.js');
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const output = "function TranspiledJS() {\\n  return 'this should be transpiled';\\n}";
+
+
+`;

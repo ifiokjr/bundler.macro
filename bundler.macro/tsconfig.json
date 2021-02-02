@@ -5,15 +5,10 @@
     "",
     "Then run: `pnpm -w generate:ts`"
   ],
-  "extends": "../../../support/tsconfig.base.json",
+  "extends": "../support/tsconfig.base.json",
   "compilerOptions": {
-    "types": [],
+    "types": ["node"],
     "declaration": true,
-    "noEmit": false,
-    "composite": true,
-    "emitDeclarationOnly": true,
-    "outDir": "../dist-types"
-  },
-  "include": ["./"],
-  "references": []
+    "noEmit": true
+  }
 }

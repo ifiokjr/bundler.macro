@@ -2,7 +2,7 @@
   "name": "website",
   "version": "0.0.0",
   "private": true,
-  "repository": "https://github.com/remirror/template/tree/HEAD/website",
+  "repository": "https://github.com/ifiokjr/bundler.macro/tree/HEAD/website",
   "scripts": {
     "build": "docusaurus build",
     "deploy": "docusaurus deploy",

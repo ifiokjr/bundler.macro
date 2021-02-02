@@ -1,4 +1,4 @@
 packages:
-  - 'packages/*'
+  - 'bundler.macro'
   - 'support'
   - 'website'

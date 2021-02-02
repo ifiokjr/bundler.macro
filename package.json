@@ -1,8 +1,8 @@
 {
   "name": "root",
   "private": true,
-  "homepage": "https://github.com/remirror/template",
-  "repository": "https://github.com/remirror/template",
+  "homepage": "https://github.com/ifiokjr/bundler.macro",
+  "repository": "https://github.com/ifiokjr/bundler.macro",
   "scripts": {
     "audit": "pnpm audit --audit-level high",
     "build": "preconstruct build",
@@ -47,7 +47,7 @@
     "is-logged-in": "npm whoami",
     "lint": "run-s lint:\\*",
     "lint:build": "preconstruct validate",
-    "lint:es": "cross-env FULL_ESLINT_CHECK=true eslint -f codeframe --ext=.tsx,.ts,.js .",
+    "lint:es": "FULL_ESLINT_CHECK=true eslint -f codeframe --ext=.tsx,.ts,.js .",
     "lint:md": "eslint -f codeframe  --ignore-pattern='*.js' --ignore-pattern='*.ts' --ignore-pattern='*.tsx' .",
     "lint:prettier": "pnpm run:prettier -- --check",
     "lint:repo": "manypkg check",
@@ -60,8 +60,8 @@
     "size": "size-limit",
     "storybook": "manypkg run support/storybook storybook",
     "symlink:root": "node support/scripts/symlink-root.mjs",
-    "test": "jest --verbose",
-    "test:build": "cross-env TEST_BUILD=true jest --verbose --coverage=false",
+    "test": "jest --verbose --coverage=false",
+    "test:build": "TEST_BUILD=true jest --verbose --coverage=false",
     "test:watch": "jest  --watch --verbose=false --coverage=false",
     "ts": "node -r esm -r ./support/scripts/babel-register.js",
     "typecheck": "tsc -b ./tsconfig.json",
@@ -108,8 +108,8 @@
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "babel-plugin-dev-expression": "^0.2.2",
     "babel-plugin-macros": "^3.0.1",
+    "bundler.macro": "0.0.0",
     "cpy-cli": "^3.1.1",
-    "cross-env": "^7.0.3",
     "esbuild": "^0.8.39",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
@@ -148,8 +148,7 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/*",
-      "packages/@*/*"
+      "bundler.macro"
     ]
   }
 }

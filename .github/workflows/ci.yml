@@ -21,7 +21,7 @@ jobs:
   version:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.repository == 'remirror/template'
+    if: github.ref == 'refs/heads/main' && github.repository == 'ifiokjr/bundler.macro'
     steps:
       - name: checkout code repository
         uses: actions/checkout@v2

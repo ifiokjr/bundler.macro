@@ -2,8 +2,8 @@
   "name": "support",
   "version": "0.0.0",
   "private": true,
-  "description": "The support directory for remirror/template monorepo",
-  "repository": "https://github.com/remirror/template/tree/HEAD/support",
+  "description": "The support directory for ifiokjr/bundler.macro monorepo",
+  "repository": "https://github.com/ifiokjr/bundler.macro/tree/HEAD/support",
   "dependencies": {
     "@babel/register": "^7.12.10",
     "@changesets/get-dependents-graph": "^1.2.0",

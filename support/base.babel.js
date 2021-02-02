@@ -35,7 +35,6 @@ module.exports = {
     },
   ],
   plugins: [
-    'babel-plugin-macros',
     ['@babel/plugin-transform-runtime', {}],
     ['@babel/plugin-transform-template-literals', {}, 'no-clash'],
     '@babel/plugin-proposal-object-rest-spread',

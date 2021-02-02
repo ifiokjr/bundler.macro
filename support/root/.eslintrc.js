@@ -30,7 +30,6 @@ let config = {
     'plugin:jest-formatting/recommended',
     'plugin:jest/recommended',
     'plugin:jest/style',
-    'plugin:eslint-comments/recommended',
   ],
 
   parserOptions: {
@@ -206,10 +205,6 @@ let config = {
       },
     ],
     '@typescript-eslint/prefer-function-type': 'error',
-    '@typescript-eslint/no-unused-vars-experimental': [
-      'error',
-      { ignoreArgsIfArgsAfterAreUsed: true },
-    ],
     '@typescript-eslint/array-type': [
       'error',
       { default: 'array-simple', readonly: 'array-simple' },
@@ -269,18 +264,13 @@ let config = {
       },
     },
     {
-      files: ['support/scripts/**'],
+      files: ['support/scripts/**', 'bundler.macro/**'],
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         'unicorn/no-process-exit': 'off',
         'unicorn/no-unreadable-array-destructuring': 'off',
         '@typescript-eslint/no-var-requires': 'off',
       },
-    },
-
-    {
-      files: ['**/*.d.ts', '**/__mocks__/**', 'docs/**', 'support/**'],
-      rules: { 'import/no-default-export': 'off' },
     },
   ],
 };
@@ -320,7 +310,6 @@ if (process.env.FULL_ESLINT_CHECK) {
       ...config.rules,
       'import/no-deprecated': 'warn',
       'import/max-dependencies': ['warn', { max: 20 }],
-      'import/no-default-export': 'warn',
       'import/no-mutable-exports': 'error',
       'import/first': 'error',
       'import/no-duplicates': 'error',
@@ -372,7 +361,6 @@ if (process.env.FULL_ESLINT_CHECK) {
         // Set up rules to be excluded in the markdown blocks.
         rules: {
           'unicorn/filename-case': 'off',
-          '@typescript-eslint/no-unused-vars-experimental': 'off',
         },
       },
     ],

@@ -596,20 +596,9 @@ async function generatePackageTsConfigs() {
   // Write all the files to the locations.
   await Promise.all(promises);
 
-  const packagesTsconfig = {
-    extends: makeRelative(path.relative(path.dirname(paths.packagesTsconfig), paths.baseTsconfig)),
-    compilerOptions: {
-      types: [...types],
-      declaration: false,
-      noEmit: true,
-      skipLibCheck: true,
-    },
-    include: ['./*/src'],
-  };
-
   references.sort((a, b) => a.path.localeCompare(b.path));
   await writeJSON(paths.rootTsconfig, { include: [], files: [], references });
-  await writeJSON(paths.packagesTsconfig, packagesTsconfig);
+
   await writeJSON(paths.rootTypedoc, { entryFiles, out: 'docs/api' });
   filesToPrettify.push(paths.rootTsconfig);
 }

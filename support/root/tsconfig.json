@@ -3,10 +3,10 @@
   "files": [],
   "references": [
     {
-      "path": "packages/template-package/__tests__"
+      "path": "bundler.macro/__tests__"
     },
     {
-      "path": "packages/template-package/src"
+      "path": "bundler.macro/src"
     },
     {
       "path": "website/src"

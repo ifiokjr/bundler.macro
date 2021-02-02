@@ -1,4 +1,4 @@
 {
-  "entryFiles": ["packages/template-package/src/index.ts"],
+  "entryFiles": ["bundler.macro/src/index.ts"],
   "out": "docs/api"
 }

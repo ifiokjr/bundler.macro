@@ -1,18 +1,19 @@
 <p align="center">
   <a href="#">
-    <img width="300" height="300" src="support/assets/logo.svg" alt="svg logo from undraw.co" title="SVG Logo from undraw.co" />
+    <img width="300" height="300" src="support/assets/logo.svg" alt="free logo via https://logodust.com/" title="free logo via https://logodust.com/" />
   </a>
 </p>
 
 <p align="center">
-  Add your <em>motivational</em> tagline here.
+  Bundle your <em>JavaScript</em> and <em>TypeScript</em> files inline.
 </p>
 
 <br />
 
 <p align="center">
-  <a href="#getting-started"><strong>Getting Started</strong></a> ·
   <a href="#why"><strong>Why?</strong></a> ·
+  <a href="#installation"><strong>Installation</strong></a> ·
+  <a href="#installation"><strong>Installation</strong></a> ·
   <a href="docs"><strong>Documentation</strong></a> ·
   <a href="docs/contributing.md"><strong>Contributing</strong></a>
 </p>
@@ -20,45 +21,100 @@
 <br />
 
 <p align="center">
-  <a href="https://github.com/remirror/template/actions?query=workflow:ci">
-    <img src="https://github.com/remirror/template/workflows/ci/badge.svg?branch=main" alt="Continuous integration badge for github actions" title="CI Badge" />
+  <a href="https://github.com/ifiokjr/bundler.macro/actions?query=workflow:ci">
+    <img src="https://github.com/ifiokjr/bundler.macro/workflows/ci/badge.svg?branch=main" alt="Continuous integration badge for github actions" title="CI Badge" />
   </a>
 </p>
 
 <br />
 
-## Getting Started
-
-Use the following steps when first using this template.
-
-- Find and replace `remirror/template` with `user/repo` across the whole project.
-- Replace `<< TEMPLATE NAME >>` in the `LICENSE` file with the name of your choosing.
-- Replace the template package in the packages folder with a package of your choosing.
-- **_OPTIONAL_**: For automatic publishing add your npm token to to your [github repo secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) with the name `NPM_TOKEN`.
-
-<br />
-
 ## Why
 
-I've created this template primarily for my work with remirror, to prevent from constantly reinventing the wheel when starting a new project. I've often had ideas and then delayed because the pain of starting from scratch is too high. This toolkit hopefully helps to reduce the friction.
+This package has primarily been created for use within the `@remirror/react-native` package to enable inline compilation local TypeScript files which are injected directly into the ReactNative WebView as a bundled file.
 
-This template repo comes with the following tools:
+There are features which you may need that are not yet included.
 
-- [`pnpm`](https://pnpm.js.org/) monorepo.
-- [`preconstruct`](https://preconstruct.tools/) - Automated builds and great support for JS tooling.
-- [`TypeScript`](https://www.typescriptlang.org/) - For typesafe code, great editor support and simpler refactoring.
-- [`eslint`](https://eslint.org/) - for code linting.
-- [`prettier`](https://prettier.io/) - for code formatting.
-- [`babel`](https://babeljs.io/) - used by preconstruct for the compilation of code and macros.
-- [`vscode`](https://code.visualstudio.com/) - as the preferred editor integration with recommended plugins.
-- [`codespaces`](https://github.com/features/codespaces) - with a dev container which is ready to use. You can launch this codebase as it is or configure as needed for your project.
-- [`changesets`](https://github.com/atlassian/changesets) - for automating releases to GitHub and NPM.
-- [`GitHub Actions`](https://github.com/features/actions) - as the primary continuous integration (deployment) tool.
-- [`husky`](https://github.com/typicode/husky/tree/v4.3.7) - for git hooks.
-- [`lint-staged`](https://github.com/okonet/lint-staged) - for automated precommit checks.
-- Minimal files at the top level via symlinks to a directory in `support/root`.
+For example, the rollup configuration is hardcoded and optimised for my current use case. I'm open to PR's which improve the functionality especially relating to the following areas.
+
+- [ ] Support custom configurations via a `bundler.macro.config.js` file. Each transformation macro should support custom configurations being used.
+- [ ] Support injection of CSS as well
+- [ ] Support a full html bundle (not just the JS)
+- [ ] Support bundling with tools other than [babel](https://babeljs.io/) e.g. [swc](https://github.com/swc-project/swc), [esbuild](https://esbuild.github.io/api/)
 
 <br />
+
+## Installation
+
+`bundler.macro` is designed to be used with [babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros) to bundle or transpile files during your build step. This can
+
+<br />
+
+First, install the plugin and it's peer dependency (`babel-plugin-macros`). Since the macro is compiled away during the build, it should be installed as a development dependency.
+
+```bash
+# yarn
+yarn add bundler.macro babel-plugin-macros
+
+# pnpm
+pnpm add bundler.macro babel-plugin-macros
+
+# npm
+npm install bundler.macro babel-plugin-macros
+```
+
+Once installed make sure to add the 'babel-plugin-macros' to your `babel.config.js` (or `.babelrc`) file.
+
+**`.babelrc`**
+
+```diff
+{
+  "plugins": [
++   "macros",
+    "other",
+    "plugins"
+  ]
+}
+```
+
+**`babel.config.js`**
+
+```diff
+module.exports = {
+  // rest of config...,
+  plugins: [
++   'macros',
+    ...otherPlugins,
+  ]
+}
+```
+
+<br /
+
+## Usage
+
+<br />
+
+### Code Example
+
+> Bundle files using rollup.
+
+```ts
+import { rollupBundler } from 'bundler.macro';
+
+// The file is bundled with `rollup` and the output is provided as a string.
+const bundledOutput: string = bundler('./main.ts');
+```
+
+> Transpile a file using babel
+
+This should be used when you want to get the string output from a file, in a format that can be
+
+```ts
+import { transpileFile } from 'bundler.macro';
+
+// The file is transpiled as a single file with babel.
+const output: string = transpileFile('./simple.js');
+```
 
 ## Contributing
 
@@ -72,7 +128,7 @@ You might also notice there are surprisingly few files in the root directory of 
 
 ## Versioning
 
-This project uses [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/remirror/template/tags).
+This project uses [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/ifiokjr/bundler.macro/tags).
 
 <br />
 
