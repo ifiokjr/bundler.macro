@@ -67,7 +67,7 @@
     "typecheck": "tsc -b ./tsconfig.json",
     "typecheck:force": "tsc -b --force",
     "update:deps": "pnpm update --latest --recursive -i",
-    "update:workspace": "pnpm up -r --workspace \"@remirror/*\"",
+    "update:workspace": "pnpm up -r --workspace bundler.macro",
     "watch": "preconstruct watch # not recommended"
   },
   "browserslist": [
