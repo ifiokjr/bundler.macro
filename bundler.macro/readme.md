@@ -2,13 +2,11 @@
 
 > Bundle local JavaScript and TypeScript files with parcel.js.
 
-[![Version][version]][npm] [![Weekly Downloads][downloads-badge]][npm] [![Bundled size][size-badge]][size] [![Typed Codebase][typescript]](#) [![MIT License][license]](#)
+[![Version][version]][npm] [![Weekly Downloads][downloads-badge]][npm] [![Typed Codebase][typescript]](#) [![MIT License][license]](#)
 
 [version]: https://flat.badgen.net/npm/v/bundler.macro
 [npm]: https://npmjs.com/package/bundler.macro
 [license]: https://flat.badgen.net/badge/license/MIT/purple
-[size]: https://bundlephobia.com/result?p=bundler.macro
-[size-badge]: https://flat.badgen.net/bundlephobia/minzip/bundler.macro
 [typescript]: https://flat.badgen.net/badge/icon/TypeScript?icon=typescript&label
 [downloads-badge]: https://badgen.net/npm/dw/bundler.macro/red?icon=npm
 
