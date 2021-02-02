@@ -1,6 +1,6 @@
 {
   "name": "bundler.macro",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Bundle local JavaScript and TypeScript files with parcel.js. ",
   "keywords": [
     "remirror"
