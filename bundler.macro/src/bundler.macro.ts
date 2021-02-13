@@ -1,7 +1,9 @@
-import { NodePath, transformFileSync } from '@babel/core';
+import { transformFileSync } from '@babel/core';
+import type { NodePath } from '@babel/traverse';
 import is from '@sindresorhus/is';
 import { createMacro, MacroError, MacroParams } from 'babel-plugin-macros';
 import type { BuildOptions } from 'esbuild';
+import escape from 'jsesc';
 import makeSync from 'make-synchronous';
 import path from 'path';
 import type { RollupOptions } from 'rollup';
@@ -10,7 +12,6 @@ import { BUNDLED_NAME } from './constants';
 
 interface MethodProps {
   reference: NodePath;
-  babel: MacroParams['babel'];
   state: MacroParams['state'];
 }
 
@@ -143,7 +144,6 @@ function getFileName(state: any): string {
 
 interface ReplaceParentExpressionProps {
   value: string;
-  babel: MacroParams['babel'];
   parentPath: NodePath;
 }
 
@@ -151,15 +151,17 @@ interface ReplaceParentExpressionProps {
  * Replace the parent expression with the string value from the bundled file.
  */
 function replaceParentExpression(options: ReplaceParentExpressionProps) {
-  const { babel, parentPath, value } = options;
+  const { parentPath, value } = options;
 
-  parentPath.replaceWith(babel.types.stringLiteral(value));
+  // const buildString = template(``);
+
+  parentPath.replaceWithSourceString(`\`${escape(value, { quotes: 'backtick' })}\``);
 }
 
 /**
  * Handles loading a single json file with an optional object path parameter.
  */
-function transpileFile({ reference, state, babel }: MethodProps) {
+function transpileFile({ reference, state }: MethodProps) {
   const filename = getFileName(state);
 
   const { parentPath } = reference;
@@ -201,10 +203,10 @@ function transpileFile({ reference, state, babel }: MethodProps) {
     frameError(parentPath, `The filePath: '${filePath}' could not be processed`);
   }
 
-  replaceParentExpression({ babel, parentPath, value: result.code });
+  replaceParentExpression({ parentPath, value: result.code });
 }
 
-function rollupBundle({ reference, state, babel }: MethodProps) {
+function rollupBundle({ reference, state }: MethodProps) {
   const filename = getFileName(state);
 
   const { parentPath } = reference;
@@ -273,7 +275,7 @@ function rollupBundle({ reference, state, babel }: MethodProps) {
       const { babel }: typeof import('@rollup/plugin-babel') = require('@rollup/plugin-babel');
       const json: typeof import('@rollup/plugin-json').default = require('@rollup/plugin-json');
       const cjs: typeof import('@rollup/plugin-commonjs').default = require('@rollup/plugin-commonjs');
-      const terser = require('rollup-plugin-terser');
+      const { terser } = require('rollup-plugin-terser');
       const {
         nodeResolve,
       }: typeof import('@rollup/plugin-node-resolve') = require('@rollup/plugin-node-resolve');
@@ -302,13 +304,12 @@ function rollupBundle({ reference, state, babel }: MethodProps) {
 
   const value = rollup({ cwd: path.dirname(input), input, name: BUNDLED_NAME, rollupBundlePath });
   replaceParentExpression({
-    babel,
     parentPath,
     value,
   });
 }
 
-function esbuildBundle({ reference, state, babel }: MethodProps) {
+function esbuildBundle({ reference, state }: MethodProps) {
   const filename = getFileName(state);
 
   const { parentPath } = reference;
@@ -370,6 +371,12 @@ function esbuildBundle({ reference, state, babel }: MethodProps) {
     const extensions = ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.node'];
     const { cwd, input, name, bundlerPath } = props;
     const options: BuildOptions = bundlerPath ? require(bundlerPath) : {};
+    const requiredOptions: BuildOptions = {
+      minify: process.env.NODE_ENV === 'production',
+      bundle: true,
+      entryPoints: [input],
+      write: false,
+    };
 
     const result = await esbuild.build(
       Object.assign(
@@ -384,22 +391,22 @@ function esbuildBundle({ reference, state, babel }: MethodProps) {
           globalName: name,
         },
         options,
-        {
-          bundle: true,
-          entryPoints: [input],
-          write: false,
-        },
+        requiredOptions,
       ),
     );
 
     return result.outputFiles?.[0]?.text ?? '';
   });
 
-  const value = esbuild({ cwd: path.dirname(input), input, name: BUNDLED_NAME, bundlerPath });
+  const value = esbuild({
+    cwd: path.dirname(input),
+    input,
+    name: BUNDLED_NAME,
+    bundlerPath,
+  });
   replaceParentExpression({
-    babel,
     parentPath,
-    value,
+    value: JSON.parse(JSON.stringify(value)),
   });
 }
 
@@ -409,7 +416,7 @@ function esbuildBundle({ reference, state, babel }: MethodProps) {
  */
 function checkReferenceExists(options: CheckReferenceExistsParameter): void {
   const { method, name, macroParameter } = options;
-  const { babel, references, state } = macroParameter;
+  const { references, state } = macroParameter;
   const namedReferences = references[name];
 
   if (!namedReferences) {
@@ -426,7 +433,7 @@ function checkReferenceExists(options: CheckReferenceExistsParameter): void {
       );
     }
 
-    method({ babel, reference, state });
+    method({ reference, state });
   }
 }
 
