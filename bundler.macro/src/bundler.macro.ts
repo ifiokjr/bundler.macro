@@ -1,8 +1,10 @@
 import { NodePath, transformFileSync } from '@babel/core';
 import is from '@sindresorhus/is';
 import { createMacro, MacroError, MacroParams } from 'babel-plugin-macros';
+import type { BuildOptions } from 'esbuild';
 import makeSync from 'make-synchronous';
 import path from 'path';
+import type { RollupOptions } from 'rollup';
 
 import { BUNDLED_NAME } from './constants';
 
@@ -219,7 +221,7 @@ function rollupBundle({ reference, state, babel }: MethodProps) {
     predicate: is.string,
   });
 
-  const name = evaluateNodeValue({
+  const rawBundlePath = evaluateNodeValue({
     node: getArgumentNode({
       parentPath,
       required: false,
@@ -235,49 +237,165 @@ function rollupBundle({ reference, state, babel }: MethodProps) {
   try {
     input = require.resolve(rawFilePath, { paths: [dir] });
   } catch {
-    frameError(parentPath, `The provided path: '${rawFilePath}' does not exist`);
+    frameError(parentPath, `The provided path: '${rawFilePath}' could not be found`);
+  }
+
+  let rollupBundlePath: string | undefined;
+
+  if (rawBundlePath) {
+    try {
+      rollupBundlePath = require.resolve(rawBundlePath, { paths: [dir] });
+    } catch {
+      frameError(
+        parentPath,
+        `The provided rollup bundle path: '${rawBundlePath}' could not be found.`,
+      );
+    }
   }
 
   interface Rollup {
     input: string;
     cwd: string;
     name: string;
+    rollupBundlePath: string | undefined;
   }
 
   const rollup = makeSync(async (props: Rollup) => {
     const { rollup }: typeof import('rollup') = require('rollup');
-    const { babel }: typeof import('@rollup/plugin-babel') = require('@rollup/plugin-babel');
-    const json: typeof import('@rollup/plugin-json').default = require('@rollup/plugin-json');
-    const cjs: typeof import('@rollup/plugin-commonjs').default = require('@rollup/plugin-commonjs');
-    const terser = require('rollup-plugin-terser');
-    const {
-      nodeResolve,
-    }: typeof import('@rollup/plugin-node-resolve') = require('@rollup/plugin-node-resolve');
 
     const extensions = ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.node'];
-    const { cwd, input } = props;
+    const { cwd, input, name, rollupBundlePath } = props;
+    let options: RollupOptions;
 
-    const bundler = await rollup({
-      input,
-      plugins: [
-        cjs({ extensions, include: /node_modules/ }),
-        babel({ cwd, extensions, babelHelpers: 'runtime', rootMode: 'upward-optional' }),
-        json({ namedExports: false }),
-        nodeResolve({ extensions, browser: true, preferBuiltins: true }),
-        process.env.NODE_ENV === 'production' && terser(),
-      ],
-    });
+    if (rollupBundlePath) {
+      options = require(rollupBundlePath);
+    } else {
+      const { babel }: typeof import('@rollup/plugin-babel') = require('@rollup/plugin-babel');
+      const json: typeof import('@rollup/plugin-json').default = require('@rollup/plugin-json');
+      const cjs: typeof import('@rollup/plugin-commonjs').default = require('@rollup/plugin-commonjs');
+      const terser = require('rollup-plugin-terser');
+      const {
+        nodeResolve,
+      }: typeof import('@rollup/plugin-node-resolve') = require('@rollup/plugin-node-resolve');
+      options = {
+        input,
+        plugins: [
+          cjs({ extensions, include: /node_modules/ }),
+          babel({ cwd, extensions, babelHelpers: 'runtime', rootMode: 'upward-optional' }),
+          json({ namedExports: false }),
+          nodeResolve({ extensions, browser: true, preferBuiltins: true }),
+          process.env.NODE_ENV === 'production' && terser(),
+        ],
+      };
+    }
+
+    const bundler = await rollup(options);
 
     const result = await bundler.generate({
       format: 'iife',
       exports: 'named',
-      name: props.name,
+      name,
     });
 
     return result.output[0].code;
   });
 
-  const value = rollup({ cwd: path.dirname(input), input, name: name ?? BUNDLED_NAME });
+  const value = rollup({ cwd: path.dirname(input), input, name: BUNDLED_NAME, rollupBundlePath });
+  replaceParentExpression({
+    babel,
+    parentPath,
+    value,
+  });
+}
+
+function esbuildBundle({ reference, state, babel }: MethodProps) {
+  const filename = getFileName(state);
+
+  const { parentPath } = reference;
+  const dir = path.dirname(filename);
+
+  const rawFilePath = evaluateNodeValue({
+    node: getArgumentNode({
+      parentPath,
+      required: true,
+      maxArguments: 2,
+      index: 0,
+    }),
+    parentPath,
+    predicate: is.string,
+  });
+
+  const rawBundlePath = evaluateNodeValue({
+    node: getArgumentNode({
+      parentPath,
+      required: false,
+      maxArguments: 2,
+      index: 1,
+    }),
+    parentPath,
+    predicate: isStringOrUndefined,
+  });
+
+  let input: string;
+
+  try {
+    input = require.resolve(rawFilePath, { paths: [dir] });
+  } catch {
+    frameError(parentPath, `The provided path: '${rawFilePath}' could not be found`);
+  }
+
+  let bundlerPath: string | undefined;
+
+  if (rawBundlePath) {
+    try {
+      bundlerPath = require.resolve(rawBundlePath, { paths: [dir] });
+    } catch {
+      frameError(
+        parentPath,
+        `The provided rollup bundle path: '${rawBundlePath}' could not be found.`,
+      );
+    }
+  }
+
+  interface Esbuild {
+    input: string;
+    cwd: string;
+    name: string;
+    bundlerPath: string | undefined;
+  }
+
+  const esbuild = makeSync(async (props: Esbuild) => {
+    const esbuild: typeof import('esbuild') = require('esbuild');
+
+    const extensions = ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.node'];
+    const { cwd, input, name, bundlerPath } = props;
+    const options: BuildOptions = bundlerPath ? require(bundlerPath) : {};
+
+    const result = await esbuild.build(
+      Object.assign(
+        {
+          absWorkingDir: cwd,
+          resolveExtensions: extensions,
+          define: {
+            __DEV__: JSON.stringify(process.env.NODE_ENV),
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+          },
+          format: 'iife',
+          globalName: name,
+        },
+        options,
+        {
+          bundle: true,
+          entryPoints: [input],
+          write: false,
+        },
+      ),
+    );
+
+    return result.outputFiles?.[0]?.text ?? '';
+  });
+
+  const value = esbuild({ cwd: path.dirname(input), input, name: BUNDLED_NAME, bundlerPath });
   replaceParentExpression({
     babel,
     parentPath,
@@ -316,6 +434,7 @@ function checkReferenceExists(options: CheckReferenceExistsParameter): void {
 const supportedMethods = [
   { name: 'rollupBundle', method: rollupBundle },
   { name: 'transpileFile', method: transpileFile },
+  { name: 'esbuildBundle', method: esbuildBundle },
 ];
 
 /**

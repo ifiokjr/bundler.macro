@@ -28,32 +28,41 @@
     "dist"
   ],
   "dependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/parser": "^7.12.11",
-    "@babel/runtime": "^7.12.5",
-    "@babel/types": "^7.12.12",
+    "@babel/core": "^7.12.16",
+    "@babel/parser": "^7.12.16",
+    "@babel/runtime": "^7.12.13",
+    "@babel/types": "^7.12",
     "@remirror/core-helpers": "^1.0.0-next.60",
-    "@rollup/plugin-babel": "^5.2.3",
-    "@rollup/plugin-commonjs": "^17.1.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^11.1.1",
-    "@rollup/plugin-replace": "^2.3.4",
-    "@sindresorhus/is": "^4.0.0",
-    "@types/babel-plugin-macros": "^2.8.4",
+    "@rollup/plugin-babel": "^5",
+    "@rollup/plugin-commonjs": "^17",
+    "@rollup/plugin-json": "^4",
+    "@rollup/plugin-node-resolve": "^11",
+    "@rollup/plugin-replace": "^2",
+    "@sindresorhus/is": "^4",
     "@types/babel__core": "^7.1.12",
     "@types/parcel-bundler": "^1.12.3",
+    "esbuild": "^0.8.44",
     "make-synchronous": "^0.1.1",
-    "rollup": "^2.38.2",
+    "rollup": "^2.39.0",
     "rollup-plugin-esbuild": "^2.6.1",
     "rollup-plugin-terser": "^7.0.2"
   },
   "devDependencies": {
+    "@types/babel-plugin-macros": "^2.8.4",
     "@types/babel-plugin-tester": "^9.0.1",
     "babel-plugin-macros": "^3.0.1",
-    "babel-plugin-tester": "^10.0.0"
+    "babel-plugin-tester": "^10.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "peerDependencies": {
-    "babel-plugin-macros": "^3.0.1"
+    "@types/babel-plugin-macros": ">=2.8.4",
+    "babel-plugin-macros": "^3"
+  },
+  "peerDependenciesMeta": {
+    "@types/babel-plugin-macros": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public"

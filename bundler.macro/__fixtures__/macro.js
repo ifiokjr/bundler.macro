@@ -1,1 +1,1 @@
-module.exports = require('../src/bundler.macro.ts');
+module.exports = require('../');

@@ -218,7 +218,7 @@ let config = {
     'default-case': 'warn',
     'prefer-template': 'warn',
     'guard-for-in': 'warn',
-    'prefer-object-spread': 'warn',
+    'prefer-object-spread': 'off',
     curly: ['warn', 'all'],
     'no-invalid-regexp': 'error',
     'no-multi-str': 'error',

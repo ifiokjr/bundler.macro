@@ -5,10 +5,17 @@
  * `bundler.macro/constants`.
  *
  * @param path - the relative path to the entry point which will be transformed.
- * @param name - An optional name to export the bundle as. Otherwise it defaults to `BUNDLED_NAME`
- * available via `bundler.macro/constants`
+ * @param rollupConfigPath - An optional path to a rollup configuration, for customising options.
  */
-export function rollupBundle(path: string, cacheBuster?: string): string;
+export function rollupBundle(path: string, rollupConfigPath?: string): string;
+
+/**
+ * Bundle the provided path with esbuild.
+ *
+ * @param path - the relative path to the entry point which will be transformed.
+ * @param buildOptionsPath - the path to an esbuild configuration for custom options.
+ */
+export function esbuildBundle(path: string, buildOptionsPath?: string): string;
 
 /**
  * Transpile a single file import. Exports and imports are not recognized.

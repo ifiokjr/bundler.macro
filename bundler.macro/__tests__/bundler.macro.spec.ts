@@ -37,5 +37,33 @@ pluginTester({
       const output = rollupBundle('./bundle.fixture.js');`,
       snapshot: true,
     },
+    'bundles packages with node included': {
+      code: `import { rollupBundle } from './macro.js';
+      const output = rollupBundle('./react-dom.fixture.js');`,
+      snapshot: true,
+    },
+  },
+});
+
+pluginTester({
+  plugin,
+  pluginName: 'bundler.macro',
+  title: 'esbuildBundle',
+  snapshot: true,
+  babelOptions: {
+    filename: fixtures('file.ts'),
+  },
+
+  tests: {
+    'run correctly': {
+      code: `import { esbuildBundle } from './macro.js';
+      const output = esbuildBundle('./bundle.fixture.js');`,
+      snapshot: true,
+    },
+    'bundles packages with node included': {
+      code: `import { esbuildBundle } from './macro.js';
+      const output = esbuildBundle('./react-dom.fixture.js');`,
+      snapshot: true,
+    },
   },
 });
