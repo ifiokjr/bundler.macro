@@ -14,11 +14,9 @@
 
 ## Installation
 
-`json.macro` is designed to be used with [babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros) to inline all your json file imports.
+`bundler.macro` is designed to be used with [babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros) to bundle or transpile files during your build step. <br />
 
-<br />
-
-First, install the plugin and it's peer dependency (`babel-plugin-macros`). Since the macro is compiled away during the build, it should be installed as a development dependency.
+First, install the plugin and it's peer dependency (`babel-plugin-macros`). Since the macro is compiled away during the build, it should be installed as a `devDependency` to prevent bloating the dependency tree of the consumers of your package.
 
 ```bash
 # yarn
@@ -38,8 +36,9 @@ Once installed make sure to add the 'babel-plugin-macros' to your `babel.config.
 ```diff
 {
   "plugins": [
-    "other-plugins",
 +   "macros",
+    "other",
+    "plugins"
   ]
 }
 ```
@@ -50,8 +49,8 @@ Once installed make sure to add the 'babel-plugin-macros' to your `babel.config.
 module.exports = {
   // rest of config...,
   plugins: [
-    ...otherPlugins,
 +   'macros',
+    ...otherPlugins,
   ]
 }
 ```
@@ -64,11 +63,31 @@ module.exports = {
 
 ### Code Example
 
-Bundle files using rollup.
+> Bundle files using esbuild.
+
+```ts
+import { esbuildBundler } from 'bundler.macro';
+
+// The file is bundled with `esbuild` and the output is provided as a string.
+const bundledOutput: string = esbuildBundler('./main.ts');
+```
+
+> Bundle files using rollup.
 
 ```ts
 import { rollupBundler } from 'bundler.macro';
 
-// The file is bundled with `parcel.js` and provided as a string.
-const bundledFile: string = bundler('./main.ts');
+// The file is bundled with `rollup` and the output is provided as a string.
+const bundledOutput: string = rollupBundler('./main.ts');
+```
+
+> Transpile a file using babel
+
+This should be used when you want to get the string output from a file, in a format that can be
+
+```ts
+import { transpileFile } from 'bundler.macro';
+
+// The file is transpiled as a single file with babel.
+const output: string = transpileFile('./simple.js');
 ```
