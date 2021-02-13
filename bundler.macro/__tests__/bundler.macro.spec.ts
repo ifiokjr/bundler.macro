@@ -4,6 +4,8 @@ import path from 'path';
 
 const fixtures = (...paths: string[]) => path.join(__dirname, '..', '__fixtures__', ...paths);
 
+process.env.NODE_ENV = 'production';
+
 pluginTester({
   plugin,
   pluginName: 'bundler.macro',
@@ -17,6 +19,7 @@ pluginTester({
     'run correctly': {
       code: `import { transpileFile } from './macro.js';
       const output = transpileFile('./transpile.fixture.js');`,
+
       snapshot: true,
     },
   },
