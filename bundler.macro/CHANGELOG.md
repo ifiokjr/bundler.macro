@@ -1,5 +1,13 @@
 # bundler.macro
 
+## 0.3.0
+
+> 2021-02-13
+
+### Minor Changes
+
+- e7d3f05: Properly escape the strings generated when bundling files.
+
 ## 0.2.0
 
 > 2021-02-13
